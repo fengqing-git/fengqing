@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.sourcegcdn.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.sourcegcdn.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.sourcegcdn.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengqing.ltd","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概览 OSD维护 MON维护 MGR维护 集群节点维护 pools相关操作 重启相关操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph-维护">
+<meta property="og:url" content="https://fengqing.ltd/2022/05/30/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/index.html">
+<meta property="og:site_name" content="Mr.風傾">
+<meta property="og:description" content="概览 OSD维护 MON维护 MGR维护 集群节点维护 pools相关操作 重启相关操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526182735956.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526181508114.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526195909286.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526200206958.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526200414611.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526200443257.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527210649782.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527210947698.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527211107840.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527231308674.png">
+<meta property="og:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527231453126-16539603106031.png">
+<meta property="og:image" content="https://fengqing.ltd/images/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526203057840.png">
+<meta property="article:published_time" content="2022-05-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-31T02:13:25.315Z">
+<meta property="article:author" content="風傾">
+<meta property="article:tag" content="ceph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fengqing.ltd/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526182735956.png">
+
+
+<link rel="canonical" href="https://fengqing.ltd/2022/05/30/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://fengqing.ltd/2022/05/30/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/","path":"2022/05/30/ceph日常维护/","title":"Ceph-维护"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ceph-维护 | Mr.風傾</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Mr.風傾</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">诗三百，一言以蔽之，思无邪</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%A7%88"><span class="nav-number">1.</span> <span class="nav-text">概览</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OSD%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.0.1.</span> <span class="nav-text">OSD维护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MON%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.0.2.</span> <span class="nav-text">MON维护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MGR%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.0.3.</span> <span class="nav-text">MGR维护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.0.4.</span> <span class="nav-text">集群节点维护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pools%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C"><span class="nav-number">1.0.5.</span> <span class="nav-text">pools相关操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%90%AF%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C"><span class="nav-number">1.0.6.</span> <span class="nav-text">重启相关操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%A6%82%E8%A7%88"><span class="nav-number">2.</span> <span class="nav-text">环境配置概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSD%E7%BB%B4%E6%8A%A4-1"><span class="nav-number">3.</span> <span class="nav-text">OSD维护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%8C%E5%88%A0%E9%99%A4OSD"><span class="nav-number">3.1.</span> <span class="nav-text">1，删除OSD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%8C%E9%87%8D%E5%BB%BAOSD"><span class="nav-number">3.2.</span> <span class="nav-text">2，重建OSD</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MON%E7%BB%B4%E6%8A%A4-1"><span class="nav-number">4.</span> <span class="nav-text">MON维护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%8C%E5%88%A0%E9%99%A4MON%E8%8A%82%E7%82%B9"><span class="nav-number">4.1.</span> <span class="nav-text">1，删除MON节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%8C%E9%87%8D%E5%BB%BAmon%E8%8A%82%E7%82%B9"><span class="nav-number">4.2.</span> <span class="nav-text">2，重建mon节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%881%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="nav-number">4.2.1.</span> <span class="nav-text">方案1（失败）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%882%EF%BC%88%E6%88%90%E5%8A%9F%EF%BC%89"><span class="nav-number">4.2.2.</span> <span class="nav-text">方案2（成功）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mgr%E7%BB%B4%E6%8A%A4"><span class="nav-number">5.</span> <span class="nav-text">mgr维护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%8C%E5%88%A0%E9%99%A4MGR"><span class="nav-number">5.1.</span> <span class="nav-text">1，删除MGR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%8C%E9%87%8D%E5%BB%BAmgr"><span class="nav-number">5.2.</span> <span class="nav-text">2，重建mgr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4"><span class="nav-number">6.</span> <span class="nav-text">集群维护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%8C%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">6.1.</span> <span class="nav-text">1，删除节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%8C%E9%87%8D%E6%96%B0%E5%AE%89%E8%A3%85%E8%8A%82%E7%82%B9"><span class="nav-number">6.2.</span> <span class="nav-text">2，重新安装节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%EF%BC%8C%E6%B7%BB%E5%8A%A0%E8%8A%82%E7%82%B9"><span class="nav-number">6.3.</span> <span class="nav-text">3，添加节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#poll"><span class="nav-number">7.</span> <span class="nav-text">poll</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AF%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C-1"><span class="nav-number">8.</span> <span class="nav-text">重启相关操作</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="風傾"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">風傾</p>
+  <div class="site-description" itemprop="description">诗三百，一言以蔽之，思无邪</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.esxi.fengqing.ltd/" title="https:&#x2F;&#x2F;www.esxi.fengqing.ltd" rel="noopener" target="_blank">esxi</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.file.fengqing.ltd/" title="https:&#x2F;&#x2F;www.file.fengqing.ltd" rel="noopener" target="_blank">文件</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.status.jianbing.ltd/" title="https:&#x2F;&#x2F;www.status.jianbing.ltd" rel="noopener" target="_blank">服务器监控</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fengqing.ltd/2022/05/30/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="風傾">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.風傾">
+      <meta itemprop="description" content="诗三百，一言以蔽之，思无邪">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Ceph-维护 | Mr.風傾">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ceph-维护
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-30T00:00:00+08:00">2022-05-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-31 10:13:25" itemprop="dateModified" datetime="2022-05-31T10:13:25+08:00">2022-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ceph/" itemprop="url" rel="index"><span itemprop="name">ceph</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><ol>
+<li><h4 id="OSD维护"><a href="#OSD维护" class="headerlink" title="OSD维护"></a>OSD维护</h4></li>
+<li><h4 id="MON维护"><a href="#MON维护" class="headerlink" title="MON维护"></a>MON维护</h4></li>
+<li><h4 id="MGR维护"><a href="#MGR维护" class="headerlink" title="MGR维护"></a>MGR维护</h4></li>
+<li><h4 id="集群节点维护"><a href="#集群节点维护" class="headerlink" title="集群节点维护"></a>集群节点维护</h4></li>
+<li><h4 id="pools相关操作"><a href="#pools相关操作" class="headerlink" title="pools相关操作"></a>pools相关操作</h4></li>
+<li><h4 id="重启相关操作"><a href="#重启相关操作" class="headerlink" title="重启相关操作"></a>重启相关操作</h4></li>
+</ol>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="环境配置概览"><a href="#环境配置概览" class="headerlink" title="环境配置概览"></a>环境配置概览</h2><table>
+<thead>
+<tr>
+<th align="center">节点</th>
+<th align="center">IP</th>
+<th align="center">OS</th>
+<th>版本</th>
+<th align="center">配置(测试环境)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ceph01</td>
+<td align="center">192.168.3.164</td>
+<td align="center">ubantu18.4</td>
+<td>16.2.9-1bionic</td>
+<td align="center">2C 4G  16G(系统) 100G(OSD)</td>
+</tr>
+<tr>
+<td align="center">ceph02</td>
+<td align="center">192.168.3.167</td>
+<td align="center">ubantu18.4</td>
+<td>16.2.9-1bionic</td>
+<td align="center">2C 4G  16G(系统) 100G(OSD)</td>
+</tr>
+<tr>
+<td align="center">ceph03</td>
+<td align="center">192.168.3.168</td>
+<td align="center">ubantu18.4</td>
+<td>16.2.9-1bionic</td>
+<td align="center">2C 4G  16G(系统) 100G(OSD)</td>
+</tr>
+<tr>
+<td align="center">ceph04</td>
+<td align="center">192.168.3.165</td>
+<td align="center">ubantu18.4</td>
+<td>16.2.9-1bionic</td>
+<td align="center">2C 4G  16G(系统) 100G(OSD)</td>
+</tr>
+</tbody></table>
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526182735956.png" alt="image-20220526182735956"></p>
+<h2 id="OSD维护-1"><a href="#OSD维护-1" class="headerlink" title="OSD维护"></a>OSD维护</h2><blockquote>
+<p>维护前须知！！！ </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd tree <span class="comment"># 查询OS，这次要删除ceph02的OSD</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526181508114.png" alt="image-20220526181508114"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#先把数据迁移走，然后再删除。！！！！（重要，确认该OSD内容搬走再删除）</span></span><br><span class="line">ceph osd crush reweight osd.1 1 <span class="comment"># 执行了之后，把osd.1 里 数据迁移出来较慢，并且还会迁移到其他机器上。</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="1，删除OSD"><a href="#1，删除OSD" class="headerlink" title="1，删除OSD"></a>1，删除OSD</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop ceph-osd.target <span class="comment"># 暂停服务</span></span><br><span class="line">ceph osd out osd.1 <span class="comment"># 剔除osd</span></span><br><span class="line">ceph osd <span class="built_in">rm</span> osd.1 <span class="comment"># 删除osd</span></span><br><span class="line">ceph osd crush <span class="built_in">rm</span> osd.1 <span class="comment"># 剔除集群</span></span><br><span class="line">ceph auth del osd.1 <span class="comment"># 删除证书 ceph auth list查看证书列表</span></span><br><span class="line">ceph osd tree <span class="comment"># 已经被删除</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526195909286.png" alt="image-20220526195909286"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">parted -s /dev/sdb mklabel gpt mkpart primary xfs 0% 100% <span class="comment"># 初始化磁盘</span></span><br><span class="line">reboot <span class="comment"># 重启</span></span><br><span class="line">mkfs.xfs /dev/sdb -f <span class="comment"># 恢复</span></span><br><span class="line">lsblk <span class="comment"># 查询</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526200206958.png" alt="image-20220526200206958"></p>
+<h3 id="2，重建OSD"><a href="#2，重建OSD" class="headerlink" title="2，重建OSD"></a>2，重建OSD</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create ceph02 --data /dev/sdb <span class="comment"># 这一步要去主要节点cd /root/ceph-deployh后执行</span></span><br><span class="line">ceph osd tree <span class="comment"># 查询已经正常了</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526200414611.png" alt="image-20220526200414611"></p>
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526200443257.png" alt="image-20220526200443257"></p>
+<h2 id="MON维护-1"><a href="#MON维护-1" class="headerlink" title="MON维护"></a>MON维护</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph -s <span class="comment"># 查询我们有四个mon节点</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527210649782.png" alt="image-20220527210649782"></p>
+<h3 id="1，删除MON节点"><a href="#1，删除MON节点" class="headerlink" title="1，删除MON节点"></a>1，删除MON节点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#我们要删除ceph04节点</span></span><br><span class="line">ceph mon <span class="built_in">stat</span> <span class="comment"># 查询模拟节点的运行状态</span></span><br><span class="line">ceph mon remove ceph04 <span class="comment"># 阐述ceph04的mon节点</span></span><br><span class="line">ceph mon <span class="built_in">stat</span><span class="comment"># 或者ceph-s # 查询是否被删除</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527210947698.png" alt="image-20220527210947698"></p>
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527211107840.png" alt="image-20220527211107840"></p>
+<h3 id="2，重建mon节点"><a href="#2，重建mon节点" class="headerlink" title="2，重建mon节点"></a>2，重建mon节点</h3><h4 id="方案1（失败）"><a href="#方案1（失败）" class="headerlink" title="方案1（失败）"></a>方案1（失败）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf /var/lib/ceph/mon/ceph-ceph04 <span class="comment">#清理该mon的文件</span></span><br><span class="line">ceph-mon –mkfs -i ceph04 –keyring /etc/ceph/ceph.mon.keyring <span class="comment"># 为ceph04 mon 初始化数据库 store.db</span></span><br><span class="line"><span class="built_in">mkdir</span> /var/lib/ceph/mon/ceph-ceph04/ <span class="comment">#补充空文件夹</span></span><br><span class="line"><span class="built_in">mkdir</span> /var/lib/ceph/mon/ceph-ceph04/store.db/ -p <span class="comment">#创建数据库文件夹</span></span><br><span class="line"><span class="built_in">touch</span> /var/lib/ceph/mon/ceph-ceph04/systemd <span class="comment">#补充done空文件</span></span><br><span class="line"><span class="built_in">touch</span> /var/lib/ceph/mon/ceph-ceph04/done <span class="comment">#补充done空文件</span></span><br><span class="line">ceph auth get-or-create mon.ceph04 mon <span class="string">&#x27;allow rwx&#x27;</span> osd <span class="string">&#x27;allow *&#x27;</span> -o /var/lib/ceph/mon/ceph-ceph04/keyring <span class="comment">#添加ceph04 mon的keyring</span></span><br><span class="line"><span class="built_in">chown</span> -R ceph:ceph /var/lib/ceph/mon/ceph-ceph04 <span class="comment"># 授权</span></span><br><span class="line"><span class="comment">#补充服务相关空文件：</span></span><br><span class="line"><span class="comment">#如果是sysvinit来管理的用这个：</span></span><br><span class="line"><span class="comment"># touch /var/lib/ceph/mon/ceph-ceph04/sysvinit</span></span><br><span class="line"><span class="comment">#如果是systemctl来管理的用这个：</span></span><br><span class="line"><span class="comment"># touch /var/lib/ceph/mon/ceph-ceph04/systemd</span></span><br><span class="line"><span class="comment">#修改文件权限</span></span><br><span class="line"><span class="comment"># chown -R ceph:ceph /var/lib/ceph/mon/ceph-ceph02</span></span><br><span class="line">ceph mon add ceph04 192.168.3.165:6789 <span class="comment"># 重新添加</span></span><br><span class="line">systemctl status ceph-mon.target</span><br></pre></td></tr></table></figure>
+
+<h4 id="方案2（成功）"><a href="#方案2（成功）" class="headerlink" title="方案2（成功）"></a>方案2（成功）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/lib/ceph <span class="comment">#进入目录</span></span><br><span class="line"><span class="built_in">rm</span> mon -r <span class="comment"># 删除旧的文件夹</span></span><br><span class="line"><span class="built_in">mkdir</span> mon <span class="comment"># 新建</span></span><br><span class="line"><span class="built_in">chown</span> ceph:ceph mon <span class="comment"># 授权</span></span><br><span class="line">ceph-deploy mon add ceph04 --address 192.168.3.165</span><br></pre></td></tr></table></figure>
+
+<h2 id="mgr维护"><a href="#mgr维护" class="headerlink" title="mgr维护"></a>mgr维护</h2><h3 id="1，删除MGR"><a href="#1，删除MGR" class="headerlink" title="1，删除MGR"></a>1，删除MGR</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#经过上面一番折腾，mgr已经寄了</span></span><br><span class="line">systemc	stop systemctl stop ceph-mgr.target <span class="comment"># 或者手动停止，官方文档并没有说怎么操作，直接停了就会调出去</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527231308674.png" alt="image-20220527231308674"></p>
+<h3 id="2，重建mgr"><a href="#2，重建mgr" class="headerlink" title="2，重建mgr"></a>2，重建mgr</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mgr create ceph04</span><br></pre></td></tr></table></figure>
+
+<p><img src="/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220527231453126-16539603106031.png" alt="image-20220527231453126"></p>
+<h2 id="集群维护"><a href="#集群维护" class="headerlink" title="集群维护"></a>集群维护</h2><h3 id="1，删除节点"><a href="#1，删除节点" class="headerlink" title="1，删除节点"></a>1，删除节点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#方式一</span></span><br><span class="line"><span class="built_in">rm</span> -rf /etc/ceph/*</span><br><span class="line"><span class="built_in">rm</span> -rf /var/lib/ceph/*/*</span><br><span class="line"><span class="built_in">rm</span> -rf /var/log/ceph/*</span><br><span class="line"><span class="built_in">rm</span> -rf /var/run/ceph/*</span><br><span class="line"><span class="comment"># 方式二（登录主机一台一台操作,清除得不彻底）：</span></span><br><span class="line">rpm -qa|grep ceph</span><br><span class="line">rpm -e python-cephfs-12.2.10-0.el7.x86_64 --nodeps</span><br><span class="line">rpm -e ceph-base-12.2.10-0.el7.x86_64 --nodeps</span><br><span class="line">rpm -e libcephfs2-12.2.10-0.el7.x86_64 --nodeps</span><br><span class="line">rpm -e ceph-common-12.2.10-0.el7.x86_64 --nodeps</span><br><span class="line">rpm -e ceph-selinux-12.2.10-0.el7.x86_64 --nodeps</span><br><span class="line"><span class="comment"># 方式三(一下删除多台)：</span></span><br><span class="line">ceph-deploy purge ceph02</span><br><span class="line">ceph-deploy purgedata ceph02</span><br></pre></td></tr></table></figure>
+
+<h3 id="2，重新安装节点"><a href="#2，重新安装节点" class="headerlink" title="2，重新安装节点"></a>2，重新安装节点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy new node-1</span><br></pre></td></tr></table></figure>
+
+<h3 id="3，添加节点"><a href="#3，添加节点" class="headerlink" title="3，添加节点"></a>3，添加节点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化参考安装文档，我这里是安装好了ceph-deploy，ssh免密，hosts等，其他没有我安装一下ceph</span></span><br><span class="line">apt-get install ceph -y <span class="comment"># 安装组件</span></span><br><span class="line">dpkg -l | grep ceph <span class="comment"># 在ceph04检查版本是否和集群一致</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/ceph-deploy <span class="comment"># 到主要节点执行添加</span></span><br><span class="line">ceph-deploy admin ceph04 <span class="comment"># 传送密钥</span></span><br><span class="line">ceph-deploy --overwrite-conf config push ceph04 <span class="comment"># 传送配置</span></span><br><span class="line">systemctl restart ceph-mon.target <span class="comment"># 重启服务</span></span><br><span class="line">ceph-deploy osd create ceph04 --data /dev/sdb <span class="comment"># 添加OSD</span></span><br><span class="line">ceph-deploy mon add ceph04 --address 192.168.3.16 <span class="comment"># 添加mon</span></span><br><span class="line">ceph-deploy mgr create ceph0 <span class="comment">#添加mgr</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/ceph%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4/image-20220526203057840.png" alt="image-20220526203057840"></p>
+<h2 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds create ceph01 ceph02 ceph03</span><br><span class="line"><span class="comment"># 初始化mds</span></span><br><span class="line">ceph -s|grep mds</span><br><span class="line"><span class="comment"># 查看</span></span><br><span class="line">ceph osd pool create fengqing_data 64  64</span><br><span class="line"><span class="comment"># 创建数据data，pg数量为64</span></span><br><span class="line">ceph osd pool create fengqing_metadata 64  64</span><br><span class="line"><span class="comment"># 创建元数据metadata，pg数量为64</span></span><br><span class="line">ceph osd pool <span class="built_in">ls</span></span><br><span class="line"><span class="comment"># 查询</span></span><br><span class="line">ceph fs new cephfs-abcdocker fengqing_metadata fengqing_data</span><br><span class="line"><span class="comment"># 关联起来</span></span><br><span class="line">ceph fs <span class="built_in">ls</span></span><br><span class="line"><span class="comment"># 查询关联</span></span><br><span class="line"><span class="built_in">mkdir</span> /test</span><br><span class="line">ceph-fuse -n client.admin -m 192.168.31.20:6789 /test</span><br><span class="line"><span class="comment"># 测试挂载</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="重启相关操作-1"><a href="#重启相关操作-1" class="headerlink" title="重启相关操作"></a>重启相关操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1.重启mgr守护进程</span></span><br><span class="line">systemctl restart ceph-mgr.target</span><br><span class="line"><span class="comment"># 2.重启mds守护进程</span></span><br><span class="line">systemctl restart ceph-mds.target</span><br><span class="line"><span class="comment"># 3.重启rgw守护进程</span></span><br><span class="line">systemctl restart ceph-radosgw.target</span><br><span class="line"><span class="comment"># 4.重启mon守护进程</span></span><br><span class="line">systemctl restart ceph-mon.target</span><br><span class="line"><span class="comment"># 5.重启osd守护进程</span></span><br><span class="line">登录到osd01节点上，该节点上运行有三个osd daemon进程osd.0、osd.l、osd.2</span><br><span class="line"><span class="comment"># 5.1重启所有的osd daemoon</span></span><br><span class="line">systemctl restart ceph-osd.target</span><br><span class="line"><span class="comment"># 重启后MDS没有standby，</span></span><br><span class="line">systemctl restart ceph-mds.target <span class="comment">#即可</span></span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ceph/" rel="tag"># ceph</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/30/Cephubantu18.4-%E5%AE%89%E8%A3%85/" rel="next" title="ceph-ubantu18.4-ceph-deploy安装">
+                  ceph-ubantu18.4-ceph-deploy安装 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">風傾</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">49k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">54 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="访客数 fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>--><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdnjs.sourcegcdn.com//ajax/libs/canvas-nest.js/1.0.1/canvas-nest.js"></script>
+
+
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.sourcegcdn.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.sourcegcdn.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.sourcegcdn.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.sourcegcdn.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.sourcegcdn.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+
+
+</html>
