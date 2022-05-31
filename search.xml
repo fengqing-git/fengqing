@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Cephcentos7.9安装.md</title>
+    <title>Cephcentos7.9安装</title>
     <url>/2022/05/30/Cephcentos7.9%E5%AE%89%E8%A3%85/</url>
     <content><![CDATA[<blockquote>
 <h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><ol>
@@ -138,13 +138,13 @@
     <title>Ceph-k8s持久化存储</title>
     <url>/2022/05/30/Cephk8s%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8/</url>
     <content><![CDATA[<blockquote>
-<h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><ol>
-<li><h4 id="静态PVC-amp-PV绑定"><a href="#静态PVC-amp-PV绑定" class="headerlink" title="静态PVC&amp;PV绑定"></a>静态PVC&amp;PV绑定</h4></li>
-<li><h4 id="动态storageClass"><a href="#动态storageClass" class="headerlink" title="动态storageClass"></a>动态storageClass</h4></li>
+<p>概览</p>
+<ol>
+<li><h2 id="静态PVC-amp-PV绑定"><a href="#静态PVC-amp-PV绑定" class="headerlink" title="静态PVC&amp;PV绑定"></a>静态PVC&amp;PV绑定</h2></li>
+<li><h2 id="动态storageClass"><a href="#动态storageClass" class="headerlink" title="动态storageClass"></a>动态storageClass</h2></li>
 </ol>
 </blockquote>
 <span id="more"></span>
-
 <h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><table>
 <thead>
 <tr>
