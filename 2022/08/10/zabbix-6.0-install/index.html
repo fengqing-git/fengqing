@@ -133,7 +133,7 @@
 
 <h3 id="查看软件列表"><a href="#查看软件列表" class="headerlink" title="查看软件列表"></a>查看软件列表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list | grep zabbix* <span class="comment">#列出所有zabbix的软件包，并查找zabbix，确认版本无误后再继续安装</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810091134871.png" alt="image-20220810091134871"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810091134871.png" alt="image-20220810091134871"></p>
 <h2 id="安装数据库"><a href="#安装数据库" class="headerlink" title="安装数据库"></a>安装数据库</h2><h3 id="数据库版本选择"><a href="#数据库版本选择" class="headerlink" title="数据库版本选择"></a>数据库版本选择</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#数据库版本选择看实际情况，如果公司里有数据库了，则新建一个库和用户，授权访问即可</span></span><br><span class="line"><span class="comment">#如果没有就按下面的安装 一个新的就可以</span></span><br><span class="line"><span class="comment">#我这里选择mysql8，也可以选择mariadb，两者有区别，建议官网自查</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="安装前"><a href="#安装前" class="headerlink" title="安装前"></a>安装前</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装前要确认没有系统自带的mariadb，如果有要删掉</span></span><br></pre></td></tr></table></figure>
@@ -142,62 +142,62 @@
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rpm -e --nodeps mariadb-libs-5.5.52-1.el7.x86_64 </span><br><span class="line">rpm -e --nodeps mariadb-connector-c-config-3.1.11-2.el8_3.noarch</span><br><span class="line"><span class="comment">#删除搜索出来的包</span></span><br><span class="line">rpm -qa | grep -i mariadb  <span class="comment"># 再次搜索确认</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810092428129.png" alt="image-20220810092428129"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810092428129.png" alt="image-20220810092428129"></p>
 <h3 id="配置mysql8的yum源"><a href="#配置mysql8的yum源" class="headerlink" title="配置mysql8的yum源"></a>配置mysql8的yum源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum module <span class="built_in">disable</span> mysql -y <span class="comment"># 禁用自带的mysql</span></span><br><span class="line">rpm -Uvh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm <span class="comment"># 配置新的源</span></span><br><span class="line">yum list | grep mysql* <span class="comment">#查询mysql版本确认是需要的后再安装</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810093611644.png" alt="image-20220810093611644"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810093611644.png" alt="image-20220810093611644"></p>
 <h3 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install mysql-community-server --nogpgcheck <span class="comment"># 开始安装，由于用的是国外的默认源，速度快慢取决于网络，也可以挂代理</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/yum.conf <span class="comment">#编辑yum配置，添加代理</span></span><br><span class="line">proxy=http://proxyHost:proxyPort <span class="comment">#选择自己的代理服务器</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810095228776.png" alt="image-20220810095228776"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810095228776.png" alt="image-20220810095228776"></p>
 <h3 id="启动mysql"><a href="#启动mysql" class="headerlink" title="启动mysql"></a>启动mysql</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysqld start <span class="comment">#启动</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status mysqld <span class="comment"># 查看状态</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810095358951.png" alt="image-20220810095358951"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810095358951.png" alt="image-20220810095358951"></p>
 <h3 id="查看mysql随机密码"><a href="#查看mysql随机密码" class="headerlink" title="查看mysql随机密码"></a>查看mysql随机密码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep <span class="string">&#x27;temporary password&#x27;</span> /var/log/mysqld.log <span class="comment"># 查看初始密码</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810095527666.png" alt="image-20220810095527666"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810095527666.png" alt="image-20220810095527666"></p>
 <h3 id="使用初始随机密码登陆"><a href="#使用初始随机密码登陆" class="headerlink" title="使用初始随机密码登陆"></a>使用初始随机密码登陆</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p <span class="comment">#输入初始随机密码后可登录数据库</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810095655883.png" alt="image-20220810095655883"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810095655883.png" alt="image-20220810095655883"></p>
 <h3 id="初始化数据库设置"><a href="#初始化数据库设置" class="headerlink" title="初始化数据库设置"></a>初始化数据库设置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;P@ssw0rd@123&#x27;; #修改密码为强密码</span><br><span class="line">#登陆进去后一定要先修改密码否则会报错:You must reset your password using ALTER USER statement before executing this statement</span><br><span class="line">SHOW VARIABLES LIKE &#x27;validate_password%&#x27;; #查看当前密码策略</span><br><span class="line">set global validate_password.length=1; #修改密码长度</span><br><span class="line">set global validate_password.policy=0; #修改密码等级</span><br><span class="line">set global log_bin_trust_function_creators = 1; #创建Trigger</span><br><span class="line">#修改密码策略后才能更改简单的密码，这里按实际要求来，我问了方便修改了策略</span><br><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;P@ssw0rd@123&#x27;;#修改自己想要的密码并授权licalhost登陆</span><br><span class="line">flush privileges; #刷新</span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810100259922.png" alt="image-20220810100259922"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810100259922.png" alt="image-20220810100259922"></p>
 <h3 id="创建zabbix数据库"><a href="#创建zabbix数据库" class="headerlink" title="创建zabbix数据库"></a>创建zabbix数据库</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create database zabbix character set utf8 collate utf8_bin; #创建数据库</span><br><span class="line">create user zabbix@&#x27;%&#x27; identified by &#x27;zabbix@2022&#x27;; # 创建zabbix用户并授权所有可以访问mysql，密码为:zabbix@2022</span><br><span class="line">grant all privileges on zabbix.* to zabbix@&#x27;%&#x27;; # 设置zabbix用户的数据库权限</span><br><span class="line">ALTER USER zabbix@&#x27;%&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;zabbix@2022&#x27;; #设置允许密码登录</span><br><span class="line">flush privileges; #刷新</span><br></pre></td></tr></table></figure>
 
 <h3 id="测试登陆"><a href="#测试登陆" class="headerlink" title="测试登陆"></a>测试登陆</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -uzabbix -p <span class="comment">#输入密码即可用zabbix用户登录数据库</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show databases; #查询数据库，可以看到zabbix表即可</span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810101456754.png" alt="image-20220810101456754"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810101456754.png" alt="image-20220810101456754"></p>
 <h2 id="开始安装zabbix"><a href="#开始安装zabbix" class="headerlink" title="开始安装zabbix"></a>开始安装zabbix</h2><h3 id="安装zabbix组件"><a href="#安装zabbix组件" class="headerlink" title="安装zabbix组件"></a>安装zabbix组件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf install zabbix-server-mysql zabbix-web-mysql zabbix-apache-conf zabbix-sql-scripts zabbix-selinux-policy zabbix-agent <span class="comment"># 安装组件</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="配置zabbix"><a href="#配置zabbix" class="headerlink" title="配置zabbix"></a>配置zabbix</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zcat /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -p <span class="comment"># 导入初始架构和数据，系统将提示您输入新创建的密码</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_server.conf <span class="comment">#导入完成后编辑配置文件，把密码写入DBPassword=zabbix@2022</span></span><br></pre></td></tr></table></figure>
 
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810104226236.png" alt="image-20220810104226236"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810104226236.png" alt="image-20220810104226236"></p>
 <h3 id="启动zabbix"><a href="#启动zabbix" class="headerlink" title="启动zabbix"></a>启动zabbix</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart zabbix-server zabbix-agent httpd php-fpm <span class="comment"># 启动组件</span></span><br><span class="line">systemctl <span class="built_in">enable</span> zabbix-server zabbix-agent httpd php-fpm <span class="comment"># 设置开机自启动</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="登陆前端"><a href="#登陆前端" class="headerlink" title="登陆前端"></a>登陆前端</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#连接到新安装的Zabbix前端： http://server_ip_or_name/zabbix</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="配置前端"><a href="#配置前端" class="headerlink" title="配置前端"></a>配置前端</h3><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810104512814.png" alt="image-20220810104512814"></p>
+<h3 id="配置前端"><a href="#配置前端" class="headerlink" title="配置前端"></a>配置前端</h3><p><img src="/../images/zabbix-6.0-install/image-20220810104512814.png" alt="image-20220810104512814"></p>
 <p>选择next</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810104545218.png" alt="image-20220810104545218"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810104545218.png" alt="image-20220810104545218"></p>
 <p>选择next</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810104610540.png" alt="image-20220810104610540"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810104610540.png" alt="image-20220810104610540"></p>
 <p>此处输入zabbix数据库密码:zabbix@2022后点击next</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810105149250.png" alt="image-20220810105149250"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810105149250.png" alt="image-20220810105149250"></p>
 <p>输入想要的名字后点next</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810105213601.png" alt="image-20220810105213601"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810105213601.png" alt="image-20220810105213601"></p>
 <p>点击next</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810105226548.png" alt="image-20220810105226548"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810105226548.png" alt="image-20220810105226548"></p>
 <p>点完成</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810105246986.png" alt="image-20220810105246986"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810105246986.png" alt="image-20220810105246986"></p>
 <p>输入初始账号:Admin密码：zabbix</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/../images/zabbix-6.0-install/image-20220810105330222.png" alt="image-20220810105330222"></p>
+<p><img src="/../images/zabbix-6.0-install/image-20220810105330222.png" alt="image-20220810105330222"></p>
 <p>结束</p>
 
 
@@ -351,8 +351,8 @@
 
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
   // optional plugins
-  if ('true' == 'true') {
-    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  if ('false' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":false,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
   }
   if ('true' == 'true') {
     stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});

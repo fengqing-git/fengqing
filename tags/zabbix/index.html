@@ -96,7 +96,7 @@
 <div class="nav-wrap"><nav class="sub post cap"><a href="/">近期发布</a><a href="/categories">分类</a><a class="active" href="/tags">标签：zabbix</a><a href="/archives">归档</a></nav></div>
 
   <div class="post-list post"><a class="post-card post photo " href="/2022/08/10/zabbix-6.0-install/">
-<article class="md-text"><div class="post-cover"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="../images/zabbix-6.0-install/fengmian.png"/></div><h2 class="post-title">zabbix6.0安装</h2><div class="excerpt"><p>本文示范了zabbix在centos8s中的all-in-one的安装和配置</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-08-09T16:00:00.000Z">2022-08-10</time></span><span class="cap breadcrumb">zabbix</span></div></article>
+<article class="md-text"><div class="post-cover"><img src="../images/zabbix-6.0-install/fengmian.png"/></div><h2 class="post-title">zabbix6.0安装</h2><div class="excerpt"><p>本文示范了zabbix在centos8s中的all-in-one的安装和配置</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-08-09T16:00:00.000Z">2022-08-10</time></span><span class="cap breadcrumb">zabbix</span></div></article>
 </a></div>
   
 
@@ -240,8 +240,8 @@
 
   stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
   // optional plugins
-  if ('true' == 'true') {
-    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  if ('false' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":false,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
   }
   if ('true' == 'true') {
     stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
