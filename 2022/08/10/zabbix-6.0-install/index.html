@@ -31,7 +31,7 @@
 <meta property="og:description" content="本文示范了zabbix在centos8s中的all-in-one的安装和配置">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fengqing.ltd/images/zabbix-6.0-install/image-20220810091134871.png">
-<meta property="og:image" content="https://fengqing.ltd/2022/08/10/zabbix-6.0-install/source/images/zabbix-6.0-install/image-20220810091134871.png">
+<meta property="og:image" content="https://fengqing.ltd/2022/08/10/images/zabbix-6.0-install/image-20220810091134871.png">
 <meta property="og:image" content="https://fengqing.ltd/images/zabbix-6.0-install/image-20220810092428129.png">
 <meta property="og:image" content="https://fengqing.ltd/images/zabbix-6.0-install/image-20220810093611644.png">
 <meta property="og:image" content="https://fengqing.ltd/images/zabbix-6.0-install/image-20220810095228776.png">
@@ -50,7 +50,7 @@
 <meta property="og:image" content="https://fengqing.ltd/images/zabbix-6.0-install/image-20220810105246986.png">
 <meta property="og:image" content="https://fengqing.ltd/images/zabbix-6.0-install/image-20220810105330222.png">
 <meta property="article:published_time" content="2022-08-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-14T01:59:54.601Z">
+<meta property="article:modified_time" content="2022-12-14T02:07:03.455Z">
 <meta property="article:author" content="風傾">
 <meta property="article:tag" content="zabbix">
 <meta property="article:tag" content="centos">
@@ -134,8 +134,8 @@
 
 <h3 id="查看软件列表"><a href="#查看软件列表" class="headerlink" title="查看软件列表"></a>查看软件列表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list | grep zabbix* <span class="comment">#列出所有zabbix的软件包，并查找zabbix，确认版本无误后再继续安装</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/../images/zabbix-6.0-install/image-20220810091134871.png" alt="image-20220810091134871"></p>
-<div class="tag-plugin image"><div class="image-bg"><img src="source/images/zabbix-6.0-install/image-20220810091134871.png" fancybox="true"/></div></div>
+<p><img src="/../images/zabbix-6.0-install/image-20220810091134871.png" alt="image"></p>
+<div class="tag-plugin image"><div class="image-bg"><img src="../images/zabbix-6.0-install/image-20220810091134871.png" fancybox="true"/></div></div>
 <h2 id="安装数据库"><a href="#安装数据库" class="headerlink" title="安装数据库"></a>安装数据库</h2><h3 id="数据库版本选择"><a href="#数据库版本选择" class="headerlink" title="数据库版本选择"></a>数据库版本选择</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#数据库版本选择看实际情况，如果公司里有数据库了，则新建一个库和用户，授权访问即可</span></span><br><span class="line"><span class="comment">#如果没有就按下面的安装 一个新的就可以</span></span><br><span class="line"><span class="comment">#我这里选择mysql8，也可以选择mariadb，两者有区别，建议官网自查</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="安装前"><a href="#安装前" class="headerlink" title="安装前"></a>安装前</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装前要确认没有系统自带的mariadb，如果有要删掉</span></span><br></pre></td></tr></table></figure>
