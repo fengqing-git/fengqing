@@ -4812,9 +4812,3 @@ div.swiper-slide img {
   background: #fff !important;
   --swiper-theme-color: #ff5724 !important;
 }
-img[fancybox='true'] {
-  cursor: zoom-in;
-}
-.swiper-slide {
-  cursor: zoom-in;
-}
