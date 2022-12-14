@@ -81,14 +81,14 @@
       
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/zabbix/">zabbix</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-12-14T02:57:36.122Z">2022-12-14</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/zabbix/">zabbix</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-12-14T02:59:22.583Z">2022-12-14</time></div></div>
 
 <article class='md-text content post'>
 <h1 class="article-title"><span>zabbix6.0安装</span></h1>
 <p>本文示范了zabbix在centos8s中的all-in-one的安装和配置</p>
 <span id="more"></span>
 
-<h2 id="基础系统配置"><a href="#基础系统配置" class="headerlink" title="基础系统配置"></a>基础系统配置</h2><h3 id="设置计算机名字"><a href="#设置计算机名字" class="headerlink" title="设置计算机名字"></a>设置计算机名字</h3><details class="tag-plugin folding" color="dark" child="codeblock" open><summary><span>关闭selinux</span></summary><div class="body"><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hostnamectl set-hostname zabbix <span class="comment">#设置计算机名字</span></span><br></pre></td></tr></table></figure></div></details>
+<h2 id="基础系统配置"><a href="#基础系统配置" class="headerlink" title="基础系统配置"></a>基础系统配置</h2><h3 id="设置计算机名字"><a href="#设置计算机名字" class="headerlink" title="设置计算机名字"></a>设置计算机名字</h3><details class="tag-plugin folding" color="yellow" child="codeblock" open><summary><span>关闭selinux</span></summary><div class="body"><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hostnamectl set-hostname zabbix <span class="comment">#设置计算机名字</span></span><br></pre></td></tr></table></figure></div></details>
 
 <h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><details class="tag-plugin folding" color="yellow" child="codeblock" open><summary><span>关闭selinux</span></summary><div class="body"><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">&#x27;s/SELINUX=enforcing/SELINUX=disabled/&#x27;</span> /etc/selinux/config </span><br></pre></td></tr></table></figure></div></details>
 
