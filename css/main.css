@@ -3403,52 +3403,6 @@ nav.menu a.nav-item:hover {
   height: calc(100% - 2 * 2px);
   border-radius: calc(100% - 2 * 2px);
 }
-.logo-wrap a.avatar div.bg {
-  transition: opacity 0.2s ease-out;
-  -moz-transition: opacity 0.2s ease-out;
-  -webkit-transition: opacity 0.2s ease-out;
-  -o-transition: opacity 0.2s ease-out;
-  position: absolute;
-  opacity: 0 !important;
-  z-index: -1;
-}
-@-moz-keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@-o-keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.logo-wrap a.avatar:hover div.bg {
-  opacity: 1 !important;
-  animation: spin infinite 4s;
-  animation-timing-function: linear;
-}
 .logo-wrap a.title {
   font-size: 1.75rem;
   font-weight: 900;
