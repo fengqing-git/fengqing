@@ -135,7 +135,7 @@
 <h3 id="查看软件列表"><a href="#查看软件列表" class="headerlink" title="查看软件列表"></a>查看软件列表</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list | grep zabbix* <span class="comment">#列出所有zabbix的软件包，并查找zabbix，确认版本无误后再继续安装</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/../images/zabbix-6.0-install/image-20220810091134871.png" alt="image-20220810091134871"></p>
-<div class="tag-plugin image"><div class="image-bg"><img src="../images/zabbix-6.0-install/image-20220810091134871.png"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img src="../images/zabbix-6.0-install/image-20220810091134871.png" fancybox="true"/></div></div>
 <h2 id="安装数据库"><a href="#安装数据库" class="headerlink" title="安装数据库"></a>安装数据库</h2><h3 id="数据库版本选择"><a href="#数据库版本选择" class="headerlink" title="数据库版本选择"></a>数据库版本选择</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#数据库版本选择看实际情况，如果公司里有数据库了，则新建一个库和用户，授权访问即可</span></span><br><span class="line"><span class="comment">#如果没有就按下面的安装 一个新的就可以</span></span><br><span class="line"><span class="comment">#我这里选择mysql8，也可以选择mariadb，两者有区别，建议官网自查</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="安装前"><a href="#安装前" class="headerlink" title="安装前"></a>安装前</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装前要确认没有系统自带的mariadb，如果有要删掉</span></span><br></pre></td></tr></table></figure>
@@ -365,8 +365,8 @@
   if ('true' == 'true') {
     stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
   }
-  if ('false' == 'true') {
-    stellar.plugins.fancybox = Object.assign({"enable":false,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
   }
   if ('false' == 'true') {
     stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
